@@ -1,0 +1,14 @@
+backend:
+  image: registry.example.com/inventory-backend:0.1.0
+  replicas: 2
+  kafkaBootstrap: kafka:9092
+  dbUrl: jdbc:postgresql://postgres:5432/inventory
+  dbSecret: inventory-db        # Secret with keys: username, password
+  sapBaseUrl: ""
+frontend:
+  image: registry.example.com/inventory-frontend:0.1.0
+  replicas: 1
+forecaster:
+  image: registry.example.com/inventory-forecaster:0.1.0
+  schedule: "0 2 * * *"
+  dbDsnSecret: inventory-forecaster-dsn   # Secret with key: dsn

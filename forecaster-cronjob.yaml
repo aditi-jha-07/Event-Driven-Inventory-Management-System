@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata: { name: forecaster }
+spec:
+  schedule: {{ .Values.forecaster.schedule | quote }}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: forecaster
+              image: {{ .Values.forecaster.image }}
+              env:
+                - { name: RUN_ONCE, value: "true" }
+                - { name: KAFKA_BOOTSTRAP, value: {{ .Values.backend.kafkaBootstrap | quote }} }
+                - name: DB_DSN
+                  valueFrom: { secretKeyRef: { name: {{ .Values.forecaster.dbDsnSecret }}, key: dsn } }

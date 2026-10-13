@@ -1,0 +1,5 @@
+apiVersion: v2
+name: inventory
+description: Event-driven inventory management system
+version: 0.1.0
+appVersion: "0.1.0"

@@ -28,20 +28,6 @@ React dashboard ◀── /api/stock, /purchase-orders, /forecasts, /forecast-ac
 | Forecasting | Python, Prophet, scheduled job (loop locally, CronJob in cluster) |
 | DevOps | Docker Compose, Helm chart, ArgoCD Application |
 
-## Run it
-
-```bash
-docker compose up --build          # Kafka (KRaft), Postgres, backend, forecaster, dashboard
-python3 scripts/seed.py            # 120 days of synthetic events, ends below reorder points
-open http://localhost:3000
-```
-
-Within a few seconds the dashboard shows stock below reorder points and purchase orders
-(`SIM-<id>` refs, since no SAP URL is set). The forecaster runs every 5 minutes; once it has
-written results, select a row to see the 14-day forecast and MAPE.
-
-Set `SAP_BASE_URL` to enable real calls. The payload in `SapClient.kt` is a placeholder contract.
-
 ## Design notes
 
 - Replay: the stock view is a pure fold over events, so you can rebuild it by resetting the
@@ -50,9 +36,3 @@ Set `SAP_BASE_URL` to enable real calls. The payload in `SapClient.kt` is a plac
   PO creation is guarded to one open PO per sku/warehouse.
 - Grafana Loki: log shipping (Promtail/Alloy) is cluster-level and not included in the chart.
   The backend logs to stdout, which Loki picks up.
-
-## Known gaps
-
-- Not compiled or run in the authoring environment (no Maven/npm access). Expect to fix small
-  build issues on first run.
-- No auth, no tests, and the Helm chart assumes Kafka and Postgres already exist in the cluster.
